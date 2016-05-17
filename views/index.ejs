@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+		<script src="/javascripts/jquery.js"></script>
+		<script src="/javascripts/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+				<div class="form-group">
+					<input type="file" name="file" id="file">
+				</div>
+				<div class="form-group">
+					<button class="btn btn-info form-control" onclick="upload()">Upload</button>
+				</div>
+				<div class="form-group">
+					<p class="well text-success hidden" id="result"></p>
+				</div>
+			</div>
+		</div>
+		<script>
+			function upload () {
+				// document.preventDefault();
+				var fd = new FormData();
+				console.log(document.getElementById('file').files[0]);
+				fd.append('file', document.getElementById('file').files[0]);
+				$.ajax({
+					url: '/api/file',
+					type: 'POST',
+					contentType: false,
+					mimeType: 'multipart/form-data',
+					data: fd,
+					processData: false,
+					success: function (data) {
+						data = JSON.parse(data);
+						$('#result').text((data.size / 1024 / 1024).toFixed(2) + " MB.");
+						$('#result').removeClass("hidden");
+					},
+					error: function (err) {
+						console.log(err);
+					}
+				})
+			}
+		</script>
+	</body>
+</html>
